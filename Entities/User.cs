@@ -1,5 +1,3 @@
-using PixelPlace.Api.Models;
-
 namespace PixelPlace.Api.Entities;
 
 public class User

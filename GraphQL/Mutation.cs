@@ -1,30 +1,40 @@
+using Microsoft.EntityFrameworkCore;
 using PixelPlace.Api.Data;
+using PixelPlace.Api.Entities;
 using PixelPlace.Api.GraphQL.Input;
-using PixelPlace.Api.Models;
 
 namespace PixelPlace.Api.GraphQL;
 
 public class Mutation
 {
-    public Pixel PlacePixel(PlacePixelInput input)
+    public async Task<Pixel> PlacePixel(PlacePixelInput input, AppDbContext db)
     {
-        Pixel? existing = PixelStore.Pixels.FirstOrDefault(p =>
+        Pixel? existingPixel = await db.Pixels.FirstOrDefaultAsync(p =>
             p.X == input.X && p.Y == input.Y);
 
-        if (existing is not null)
+        if (existingPixel is not null)
         {
-            existing.Color = input.Color;
-            return existing;
+            existingPixel.Color = input.Color;
+            existingPixel.UpdateAt = DateTime.UtcNow;
+            existingPixel.UserId = 1; // TODO: change this
+
+            await db.SaveChangesAsync();
+
+            return existingPixel;
         }
 
         var pixel = new Pixel
         {
             X = input.X,
             Y = input.Y,
-            Color = input.Color
+            Color = input.Color,
+            UpdateAt = DateTime.UtcNow,
+            UserId = 1 // TODO: change this
         };
 
-        PixelStore.Pixels.Add(pixel);
+        db.Pixels.Add(pixel);
+
+        await db.SaveChangesAsync();
 
         return pixel;
     }
