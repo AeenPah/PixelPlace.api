@@ -1,6 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using PixelPlace.Api.Data;
 using PixelPlace.Api.Entities;
+using PixelPlace.Api.Services;
 
 namespace PixelPlace.Api.GraphQL;
 
@@ -16,8 +15,8 @@ public class Query
         };
     }
 
-    public async Task<IEnumerable<Pixel>> GetCanvas(AppDbContext db)
+    public Task<List<Pixel>> GetCanvas(PixelService service)
     {
-        return await db.Pixels.ToListAsync();
+        return service.GetCanvas();
     }
 }
