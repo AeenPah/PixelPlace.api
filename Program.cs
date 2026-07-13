@@ -17,7 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services
     .AddGraphQLServer()
     .AddQueryType<Query>()
-    .AddMutationType<Mutation>();
+    .AddMutationType<Mutation>()
+    .AddTypeExtension<PixelResolver>();
 
 var app = builder.Build();
 
