@@ -17,7 +17,7 @@ public class TokenService(IConfiguration configuration)
         };
 
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(configuration["JWT:key"]));
+            Encoding.UTF8.GetBytes(configuration["JWT:Key"]!));
 
         var credentials = new SigningCredentials(
             key,

@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using HotChocolate.Authorization;
 using HotChocolate.Subscriptions;
 using PixelPlace.Api.Entities;
 using PixelPlace.Api.GraphQL.Input;
@@ -22,12 +24,18 @@ public class Mutation
         return service.Login(input);
     }
 
+    [Authorize]
     public async Task<Pixel> PlacePixel(
         PlacePixelInput input,
+        ClaimsPrincipal claims,
         PixelService service,
         ITopicEventSender sender)
     {
-        Pixel? pixel = await service.PlacePixel(input);
+        var userId = int.Parse(
+            claims.FindFirstValue(ClaimTypes.NameIdentifier)!
+        );
+
+        Pixel? pixel = await service.PlacePixel(input, userId);
 
         await sender.SendAsync(Topics.PixelPlaced, pixel);
 

@@ -15,7 +15,7 @@ public class PixelService
     }
 
 
-    public async Task<Pixel> PlacePixel(PlacePixelInput input)
+    public async Task<Pixel> PlacePixel(PlacePixelInput input, int userId)
     {
         Pixel? pixel = await _db.Pixels
             .FirstOrDefaultAsync(p =>
@@ -26,7 +26,7 @@ public class PixelService
         {
             pixel.Color = input.Color;
             pixel.UpdateAt = DateTime.UtcNow;
-            pixel.UserId = 1; // TODO: change this later
+            pixel.UserId = userId;
         }
         else
         {
@@ -36,7 +36,7 @@ public class PixelService
                 Y = input.Y,
                 Color = input.Color,
                 UpdateAt = DateTime.UtcNow,
-                UserId = 1 // TODO: change this
+                UserId = userId
             };
 
             _db.Pixels.Add(pixel);
