@@ -6,6 +6,7 @@ using PixelPlace.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<PixelService>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddSingleton<TokenService>();
 builder.Services.AddSingleton<PasswordHasherService>();
