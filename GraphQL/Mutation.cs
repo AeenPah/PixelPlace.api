@@ -1,3 +1,4 @@
+using HotChocolate.Subscriptions;
 using PixelPlace.Api.Entities;
 using PixelPlace.Api.GraphQL.Input;
 using PixelPlace.Api.Services;
@@ -6,8 +7,15 @@ namespace PixelPlace.Api.GraphQL;
 
 public class Mutation
 {
-    public Task<Pixel> PlacePixel(PlacePixelInput input, PixelService service)
+    public async Task<Pixel> PlacePixel(
+        PlacePixelInput input,
+        PixelService service,
+        ITopicEventSender sender)
     {
-        return service.PlacePixel(input);
+        Pixel? pixel = await service.PlacePixel(input);
+
+        await sender.SendAsync(Topics.PixelPlaced, pixel);
+
+        return pixel;
     }
 }

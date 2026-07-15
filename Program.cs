@@ -18,10 +18,14 @@ builder.Services
     .AddGraphQLServer()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
-    .AddTypeExtension<PixelResolver>();
+    .AddTypeExtension<PixelResolver>()
+    .AddSubscriptionType<Subscription>()
+    // For local deployment
+    .AddInMemorySubscriptions();
 
 var app = builder.Build();
 
+app.UseWebSockets();
 app.MapGraphQL();
 
 app.Run();
