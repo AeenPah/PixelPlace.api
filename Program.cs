@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<PixelService>();
 
+builder.Services.AddSingleton<TokenService>();
+builder.Services.AddSingleton<PasswordHasherService>();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(
