@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client/react";
 import { GET_CANVAS } from "../../graphql/queries/getCanvas";
+import PixelCanvas from "./components/PixelCanvas";
 
 function Canvas() {
   const { data, loading, error } = useQuery(GET_CANVAS);
@@ -8,7 +9,11 @@ function Canvas() {
 
   if (error) return <div>Error: {error.message}</div>;
 
-  return <div>{JSON.stringify(data, null, 2)}</div>;
+  return (
+    <div>
+      <PixelCanvas pixels={data?.canvas ?? []} />
+    </div>
+  );
 }
 
 export default Canvas;

@@ -1,6 +1,12 @@
-import { gql } from "@apollo/client";
+import { gql, type TypedDocumentNode } from "@apollo/client";
 
-export const GET_CANVAS = gql`
+export type TPixel = { x: number; y: number; color: string };
+
+type TCanvasResult = {
+  canvas: TPixel[];
+};
+
+export const GET_CANVAS: TypedDocumentNode<TCanvasResult> = gql`
   query GetCanvas {
     canvas {
       x
