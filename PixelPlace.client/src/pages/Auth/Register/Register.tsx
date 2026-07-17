@@ -1,6 +1,8 @@
 import { useMutation } from "@apollo/client/react";
 import { useState, type FormEvent } from "react";
 import { REGISTER } from "../../../graphql/mutations/register";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
 
 function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -29,22 +31,22 @@ function RegisterPage() {
       <div>Register</div>
 
       <form onSubmit={handleSubmit}>
-        <input
+        <Input
           placeholder="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
 
-        <input
+        <Input
           placeholder="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading}>
           Register
-        </button>
+        </Button>
 
         {error && <p>{error.message}</p>}
       </form>

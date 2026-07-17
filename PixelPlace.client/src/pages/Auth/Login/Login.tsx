@@ -1,6 +1,8 @@
 import { useMutation } from "@apollo/client/react";
 import { useState, type FormEvent } from "react";
 import { LOGIN } from "../../../graphql/mutations/login";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
@@ -29,22 +31,22 @@ function LoginPage() {
       <div>Login</div>
 
       <form onSubmit={handleSubmit}>
-        <input
+        <Input
           placeholder="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
 
-        <input
+        <Input
           placeholder="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading}>
           Login
-        </button>
+        </Button>
 
         {error && <p>{error.message}</p>}
       </form>
