@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client/react";
-import { GET_CANVAS } from "../graphql/queries/getCanvas";
+import { GET_CANVAS } from "../../graphql/queries/getCanvas";
 
 function Canvas() {
   const { data, loading, error } = useQuery(GET_CANVAS);

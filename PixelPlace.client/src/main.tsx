@@ -10,7 +10,9 @@ import { router } from "./routes/AppRouter.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ApolloProvider client={client}>
-      <RouterProvider router={router} />
+      <div className="min-h-screen bg-black text-white">
+        <RouterProvider router={router} />
+      </div>
     </ApolloProvider>
   </StrictMode>,
 );
