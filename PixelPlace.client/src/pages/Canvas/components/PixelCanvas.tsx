@@ -1,9 +1,13 @@
 import type { TPixel } from "../../../graphql/queries/getCanvas";
 import Pixel from "./Pixel";
 
+type TPixelCanvas = {
+  pixels: TPixel[];
+  onPixelClick: (x: number, y: number) => void;
+};
 const SIZE = 50;
 
-function PixelCanvas({ pixels }: { pixels: TPixel[] }) {
+function PixelCanvas({ pixels, onPixelClick }: TPixelCanvas) {
   const pixelMap = new Map(
     pixels.map((pixel) => [`${pixel.x},${pixel.y}`, pixel.color]),
   );
@@ -26,6 +30,7 @@ function PixelCanvas({ pixels }: { pixels: TPixel[] }) {
               x={x}
               y={y}
               color={pixelMap.get(`${x},${y}`)}
+              onClick={onPixelClick}
             />
           );
         })}

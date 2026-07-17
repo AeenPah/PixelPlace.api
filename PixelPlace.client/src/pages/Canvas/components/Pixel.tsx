@@ -2,12 +2,13 @@ type PixelProps = {
   x: number;
   y: number;
   color?: string;
+  onClick: (x: number, y: number) => void;
 };
 
-export default function Pixel({ color }: PixelProps) {
+function Pixel({ x, y, color, onClick }: PixelProps) {
   return (
     <button
-      //   onClick={onClick}
+      onClick={() => onClick(x, y)}
       className="
         h-3 w-3
         border border-gray-200
@@ -22,3 +23,5 @@ export default function Pixel({ color }: PixelProps) {
     />
   );
 }
+
+export default Pixel;
