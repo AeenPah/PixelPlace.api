@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins("http://localhost:5173", "https://pixel-place-api-six.vercel.app/")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
