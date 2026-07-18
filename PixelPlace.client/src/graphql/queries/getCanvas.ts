@@ -1,11 +1,14 @@
 import { gql, type TypedDocumentNode } from "@apollo/client";
 
-export type TPixel = { x: number; y: number; color: string };
-
-type TUser = { user: { username: string } };
+export type TPixel = {
+  x: number;
+  y: number;
+  color: string;
+  user: { username: string };
+};
 
 type TCanvasResult = {
-  canvas: (TPixel & TUser)[];
+  canvas: TPixel[];
 };
 
 export const GET_CANVAS: TypedDocumentNode<TCanvasResult> = gql`

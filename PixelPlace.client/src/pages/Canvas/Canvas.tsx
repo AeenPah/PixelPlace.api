@@ -1,48 +1,82 @@
-import { useMutation, useQuery } from "@apollo/client/react";
-import { GET_CANVAS } from "../../graphql/queries/getCanvas";
+import { useMutation, useQuery, useSubscription } from "@apollo/client/react";
+import { GET_CANVAS, type TPixel } from "../../graphql/queries/getCanvas";
 import PixelCanvas from "./components/PixelCanvas";
 import { PLACE_PIXEL } from "../../graphql/mutations/placePixel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ColorPicker from "./components/ColorPicker";
+import { PIXEL_UPDATED } from "../../graphql/subscription/pixelUpdated";
 
 function Canvas() {
-  const [colorCode, setColorCode] = useState("#0000FF");
+  /* -------------------------------------------------------------------------- */
+  /*                                   GraphQL                                  */
+  /* -------------------------------------------------------------------------- */
 
-  const { data, loading, error } = useQuery(GET_CANVAS);
+  const {
+    data: canvasData,
+    loading: canvasLoading,
+    error: canvasError,
+  } = useQuery(GET_CANVAS);
 
   const [
     placePixel,
     // ,{ loading: placePixelLoading, error: placePixelError }
   ] = useMutation(PLACE_PIXEL);
 
-  async function handlePixelClick(x: number, y: number) {
-    console.log(x, y);
+  const { data: subData } = useSubscription(PIXEL_UPDATED);
 
-    const { data } = await placePixel({
+  /* -------------------------------------------------------------------------- */
+  /*                                 React Hook                                 */
+  /* -------------------------------------------------------------------------- */
+
+  const [selectedColor, setSelectedColor] = useState("#0000FF");
+  const [pixels, setPixels] = useState<TPixel[]>([]);
+
+  useEffect(() => {
+    const updatePixels = () => {
+      if (canvasData?.canvas) {
+        setPixels(canvasData.canvas);
+      }
+    };
+
+    updatePixels();
+  }, [canvasData]);
+
+  useEffect(() => {
+    if (!subData) return;
+
+    const updatePixel = () =>
+      setPixels((prev) => [...prev, subData.pixelPlaced]);
+
+    updatePixel();
+
+    console.log(subData);
+  }, [subData]);
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Functions                                 */
+  /* -------------------------------------------------------------------------- */
+
+  async function handlePixelClick(x: number, y: number) {
+    await placePixel({
       variables: {
         input: {
-          color: colorCode,
+          color: selectedColor,
           x,
           y,
         },
       },
     });
-
-    console.log("RESPONSE", data);
   }
 
-  if (loading) return <div>Loading...</div>;
+  if (canvasLoading) return <div>Loading...</div>;
 
-  if (error) return <div>Error: {error.message}</div>;
+  if (canvasError) return <div>Error: {canvasError.message}</div>;
 
   return (
     <div className="flex gap-4 flex-col items-center">
-      <ColorPicker color={colorCode} setColor={setColorCode} />
+      <ColorPicker color={selectedColor} setColor={setSelectedColor} />
 
-      <PixelCanvas
-        pixels={data?.canvas ?? []}
-        onPixelClick={handlePixelClick}
-      />
+      <PixelCanvas pixels={pixels} onPixelClick={handlePixelClick} />
     </div>
   );
 }
