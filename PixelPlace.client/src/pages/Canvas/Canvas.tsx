@@ -54,7 +54,8 @@ function Canvas() {
   }, [placePixelLoading]);
 
   useEffect(() => {
-    if (placePixelError) notify.error(`Place Pixel Error: ${placePixelError}`);
+    if (placePixelError)
+      notify.error(`Place Pixel Error: ${placePixelError.message}`);
   }, [placePixelError]);
 
   /* -------------------------------------------------------------------------- */
