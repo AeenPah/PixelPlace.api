@@ -22,7 +22,6 @@ function RegisterPage() {
       },
     });
 
-    console.log("TOKEN (login)", data);
     if (data) localStorage.setItem("token", data.register.token);
   }
 
