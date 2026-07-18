@@ -18,7 +18,12 @@ public class UserService(
 
         if (exist)
         {
-            throw new Exception("User already exist!");
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("User already exist.")
+                    .SetCode("USER_ALREADY_EXIST")
+                    .Build()
+            );
         }
 
         var user = new User
@@ -45,12 +50,23 @@ public class UserService(
 
         if (user is null)
         {
-            throw new Exception("Invalid Username!");
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Invalid Username")
+                    .SetCode("INVALID_USERNAME")
+                    .Build()
+            );
         }
 
         if (!hasherService.Verify(user, input.Password))
         {
-            throw new Exception("Invalid Password!");
+            throw new GraphQLException(
+                ErrorBuilder.New()
+                    .SetMessage("Invalid Password")
+                    .SetCode("INVALID_PASSWORD")
+                    .Build()
+            );
+
         }
 
         return new AuthPayload

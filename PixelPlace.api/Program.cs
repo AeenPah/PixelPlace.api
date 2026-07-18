@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PixelPlace.Api.Data;
+using PixelPlace.Api.Errors;
 using PixelPlace.Api.GraphQL;
 using PixelPlace.Api.Services;
 
@@ -13,6 +14,10 @@ builder.Services.AddScoped<UserService>();
 
 builder.Services.AddSingleton<TokenService>();
 builder.Services.AddSingleton<PasswordHasherService>();
+
+/* -------------------------------------------------------------------------- */
+/*                                    CORS                                    */
+/* -------------------------------------------------------------------------- */
 
 builder.Services.AddCors(options =>
 {
@@ -25,6 +30,10 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
+
+/* -------------------------------------------------------------------------- */
+/*                               Authentication                               */
+/* -------------------------------------------------------------------------- */
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -48,6 +57,10 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+/* -------------------------------------------------------------------------- */
+/*                                  Database                                  */
+/* -------------------------------------------------------------------------- */
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(
@@ -55,8 +68,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     );
 });
 
+/* -------------------------------------------------------------------------- */
+/*                                   GraphQL                                  */
+/* -------------------------------------------------------------------------- */
+
 builder.Services
     .AddGraphQLServer()
+    .AddErrorFilter<GraphQLErrorFilter>()
     .AddAuthorization()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
@@ -64,6 +82,10 @@ builder.Services
     .AddSubscriptionType<Subscription>()
     // For local deployment
     .AddInMemorySubscriptions();
+
+/* -------------------------------------------------------------------------- */
+/*                                     App                                    */
+/* -------------------------------------------------------------------------- */
 
 var app = builder.Build();
 
