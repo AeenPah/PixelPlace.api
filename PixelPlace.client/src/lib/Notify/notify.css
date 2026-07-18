@@ -1,0 +1,134 @@
+.notify-container {
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  pointer-events: none; /* clicks pass through unless on toast itself */
+}
+
+.notify-container.top-right {
+  top: 12px;
+  right: 12px;
+  align-items: flex-end;
+}
+
+.notify-container.top-left {
+  top: 12px;
+  left: 12px;
+  align-items: flex-start;
+}
+
+.notify-container.bottom-right {
+  bottom: 12px;
+  right: 12px;
+  align-items: flex-end;
+}
+
+.notify-container.bottom-left {
+  bottom: 12px;
+  left: 12px;
+  align-items: flex-start;
+}
+
+.notify-container.top-center {
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+.notify-container.bottom-center {
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+.notify-item {
+  min-width: 220px;
+  max-width: 360px;
+  background: white;
+  color: #808080;
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto; /* allow click on close button */
+  animation: notify-slide-in 150ms ease-out;
+  font-size: 14px;
+  font-weight: bolder;
+
+  .notify-content {
+    display: flex;
+    width: 100%;
+  }
+
+  .notify-actions {
+    display: flex;
+
+    button {
+      background-color: #f7f7f7;
+      padding: 4px 20px;
+      border-radius: 12px;
+    }
+    button:hover {
+      background-color: #e2e2e2;
+    }
+    button:active {
+      background-color: #dbd8d8;
+    }
+  }
+}
+
+.notify-item + .notify-item {
+  margin-top: 4px;
+}
+
+.notify-item.notify-success {
+  border-left: 4px solid #16a34a;
+  border-right: 4px solid #16a34a;
+}
+
+.notify-item.notify-error {
+  border-left: 4px solid #fb2c36;
+  border-right: 4px solid #fb2c36;
+}
+
+.notify-item.notify-info {
+  border-left: 4px solid #051f6f;
+  border-right: 4px solid #051f6f;
+}
+
+.notify-message {
+  flex: 1;
+  margin-right: 8px;
+}
+
+.notify-close {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.notify-close:hover {
+  opacity: 0.8;
+}
+
+@keyframes notify-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

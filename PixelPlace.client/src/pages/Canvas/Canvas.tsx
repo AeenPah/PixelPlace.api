@@ -5,6 +5,7 @@ import { PLACE_PIXEL } from "../../graphql/mutations/placePixel";
 import { useEffect, useState } from "react";
 import ColorPicker from "./components/ColorPicker";
 import { PIXEL_UPDATED } from "../../graphql/subscription/pixelUpdated";
+import { notify } from "../../lib/Notify/notify";
 
 function Canvas() {
   /* -------------------------------------------------------------------------- */
@@ -17,10 +18,8 @@ function Canvas() {
     error: canvasError,
   } = useQuery(GET_CANVAS);
 
-  const [
-    placePixel,
-    // ,{ loading: placePixelLoading, error: placePixelError }
-  ] = useMutation(PLACE_PIXEL);
+  const [placePixel, { loading: placePixelLoading, error: placePixelError }] =
+    useMutation(PLACE_PIXEL);
 
   const { data: subData } = useSubscription(PIXEL_UPDATED);
 
@@ -48,9 +47,15 @@ function Canvas() {
       setPixels((prev) => [...prev, subData.pixelPlaced]);
 
     updatePixel();
-
-    console.log(subData);
   }, [subData]);
+
+  useEffect(() => {
+    if (placePixelLoading) notify.info("Place Pixel Loading");
+  }, [placePixelLoading]);
+
+  useEffect(() => {
+    if (placePixelError) notify.error(`Place Pixel Error: ${placePixelError}`);
+  }, [placePixelError]);
 
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
@@ -66,6 +71,8 @@ function Canvas() {
         },
       },
     });
+
+    notify.success("pixel placed successfully!");
   }
 
   if (canvasLoading) return <div>Loading...</div>;
