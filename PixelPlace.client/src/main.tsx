@@ -7,15 +7,18 @@ import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes/AppRouter.tsx";
 import { NotifyProvider } from "./lib/Notify/NotifyProvider.tsx";
+import { TooltipProvider } from "./components/ui/tooltip.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ApolloProvider client={client}>
-      <div className="min-h-screen bg-black text-white">
-        <RouterProvider router={router} />
+      <TooltipProvider>
+        <div className="min-h-screen bg-black text-white">
+          <RouterProvider router={router} />
 
-        <NotifyProvider position="bottom-center" />
-      </div>
+          <NotifyProvider position="bottom-center" />
+        </div>
+      </TooltipProvider>
     </ApolloProvider>
   </StrictMode>,
 );
