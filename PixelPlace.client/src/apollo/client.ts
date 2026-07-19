@@ -14,7 +14,7 @@ const httpLink = new HttpLink({
 });
 
 const authLink = new ApolloLink((operation, forward) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("pp-token");
 
   operation.setContext(({ headers = {} }) => ({
     headers: {
@@ -30,7 +30,7 @@ const wsLink = new GraphQLWsLink(
   createClient({
     url: import.meta.env.VITE_GRAPHQL_WS_URL,
     connectionParams: () => ({
-      authorization: `Bearer ${localStorage.getItem("token") ?? ""}`,
+      authorization: `Bearer ${localStorage.getItem("pp-token") ?? ""}`,
     }),
   }),
 );

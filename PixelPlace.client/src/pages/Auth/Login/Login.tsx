@@ -5,10 +5,22 @@ import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 
 function LoginPage() {
+  /* -------------------------------------------------------------------------- */
+  /*                                 React Hook                                 */
+  /* -------------------------------------------------------------------------- */
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  /* -------------------------------------------------------------------------- */
+  /*                                   GraphQL                                  */
+  /* -------------------------------------------------------------------------- */
+
   const [login, { loading, error }] = useMutation(LOGIN);
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Functions                                 */
+  /* -------------------------------------------------------------------------- */
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -22,7 +34,10 @@ function LoginPage() {
       },
     });
 
-    if (data) localStorage.setItem("token", data.login.token);
+    if (data) {
+      localStorage.setItem("pp-token", data.login.token);
+      localStorage.setItem("pp-username", data.login.username);
+    }
   }
 
   return (
