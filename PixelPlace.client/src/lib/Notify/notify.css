@@ -49,18 +49,18 @@
 .notify-item {
   min-width: 220px;
   max-width: 360px;
-  background: white;
-  color: #808080;
+  background: #fcfbf7;
+  color: #3f4750;
   border-radius: 12px;
   padding: 10px 12px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(31, 35, 40, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
   pointer-events: auto; /* allow click on close button */
   animation: notify-slide-in 150ms ease-out;
   font-size: 14px;
-  font-weight: bolder;
+  font-weight: 600;
 
   .notify-content {
     display: flex;
@@ -71,15 +71,16 @@
     display: flex;
 
     button {
-      background-color: #f7f7f7;
+      background-color: #eef3f7;
+      color: #304554;
       padding: 4px 20px;
-      border-radius: 12px;
+      border-radius: 999px;
     }
     button:hover {
-      background-color: #e2e2e2;
+      background-color: #e1ebf2;
     }
     button:active {
-      background-color: #dbd8d8;
+      background-color: #d6e2ea;
     }
   }
 }

@@ -5,7 +5,7 @@ type TColorPickerProps = {
 
 function ColorPicker({ color, setColor }: TColorPickerProps) {
   return (
-    <div className="flex text-black items-center gap-4 rounded-lg border bg-white p-4 shadow-sm">
+    <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4 shadow-[0_8px_24px_rgba(31,35,40,0.06)]">
       <input
         type="color"
         value={color}
@@ -13,7 +13,7 @@ function ColorPicker({ color, setColor }: TColorPickerProps) {
         className="h-10 w-10 cursor-pointer rounded border-0 bg-transparent p-0"
       />
 
-      <span className="rounded bg-gray-100 px-3 py-1 font-mono text-sm">
+      <span className="rounded-full bg-muted px-3 py-1 font-mono text-sm text-muted-foreground">
         {color.toUpperCase()}
       </span>
     </div>

@@ -20,7 +20,7 @@ function PixelCanvas({ pixels, onPixelClick }: TPixelCanvas) {
   );
 
   return (
-    <div className="rounded-lg border border-gray-300 bg-gray-100 p-4 shadow-lg">
+    <div className="rounded-2xl border border-border bg-card/90 p-4 shadow-[0_12px_32px_rgba(31,35,40,0.08)]">
       <div
         className="grid"
         style={{
@@ -40,12 +40,12 @@ function PixelCanvas({ pixels, onPixelClick }: TPixelCanvas) {
                   onClick={() => onPixelClick(x, y)}
                   className="
                     h-3 w-3
-                    border border-gray-200
+                    border border-border/80
                     transition-all duration-75
                     hover:z-10
-                    hover:border-gray-500
+                    hover:border-primary/40
                     hover:scale-120
-                    hover:shadow-[0_0_8px_rgba(255,255,255,0.5)]
+                    hover:shadow-[0_0_8px_rgba(75,107,138,0.22)]
                     cursor-pointer
                   "
                   style={{
