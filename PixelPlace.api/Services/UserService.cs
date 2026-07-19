@@ -40,7 +40,8 @@ public class UserService(
 
         return new AuthPayload
         {
-            Token = tokenService.Create(user)
+            Token = tokenService.Create(user),
+            Username = user.Username
         };
     }
 
@@ -71,7 +72,8 @@ public class UserService(
 
         return new AuthPayload
         {
-            Token = tokenService.Create(user)
+            Token = tokenService.Create(user),
+            Username = user.Username
         };
     }
 }
