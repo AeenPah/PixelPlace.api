@@ -1,18 +1,21 @@
 import { useMutation } from "@apollo/client/react";
-import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { LOGIN } from "../../../graphql/mutations/login";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import {
+  useForm,
+  validateForm,
+  VR,
+  type TValidationSchema,
+} from "@aienpah/nanoform";
+
+type TLoginForm = {
+  username: string;
+  password: string;
+};
 
 function LoginPage() {
-  /* -------------------------------------------------------------------------- */
-  /*                                 React Hook                                 */
-  /* -------------------------------------------------------------------------- */
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
   /* -------------------------------------------------------------------------- */
   /*                                   GraphQL                                  */
   /* -------------------------------------------------------------------------- */
@@ -20,17 +23,34 @@ function LoginPage() {
   const [login, { loading, error }] = useMutation(LOGIN);
 
   /* -------------------------------------------------------------------------- */
+  /*                                    Form                                    */
+  /* -------------------------------------------------------------------------- */
+
+  const initialForm: TLoginForm = {
+    username: "",
+    password: "",
+  };
+
+  const formSchema: TValidationSchema<TLoginForm> = {
+    username: [VR.required()],
+    password: [VR.required()],
+  };
+
+  const { formRef, errors, handleChange, handleSubmit } = useForm<TLoginForm>(
+    initialForm,
+    (values) => validateForm(formSchema, values),
+  );
+
+  /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-
+  async function onSubmit(inputValues: TLoginForm) {
     const { data } = await login({
       variables: {
         input: {
-          username,
-          password,
+          username: inputValues.username,
+          password: inputValues.password,
         },
       },
     });
@@ -59,21 +79,33 @@ function LoginPage() {
           </p>
         </div>
 
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <form
+          ref={formRef}
+          className="flex flex-col gap-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <Input
+            id="username"
+            name="username"
             className="h-11 rounded-xl border-border bg-background/70"
             placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={handleChange}
           />
+          {errors?.username && (
+            <p className="text-red-500 text-sm">{errors.username}</p>
+          )}
 
           <Input
+            id="password"
+            name="password"
             className="h-11 rounded-xl border-border bg-background/70"
             placeholder="Password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handleChange}
           />
+          {errors?.password && (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          )}
 
           <Button
             className="mt-2 h-11 rounded-xl"

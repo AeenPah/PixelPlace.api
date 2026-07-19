@@ -1,18 +1,21 @@
 import { useMutation } from "@apollo/client/react";
-import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { REGISTER } from "../../../graphql/mutations/register";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import {
+  useForm,
+  validateForm,
+  VR,
+  type TValidationSchema,
+} from "@aienpah/nanoform";
+
+type TRegisterForm = {
+  username: string;
+  password: string;
+};
 
 function RegisterPage() {
-  /* -------------------------------------------------------------------------- */
-  /*                                 React Hook                                 */
-  /* -------------------------------------------------------------------------- */
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
   /* -------------------------------------------------------------------------- */
   /*                                   GraphQL                                  */
   /* -------------------------------------------------------------------------- */
@@ -20,17 +23,34 @@ function RegisterPage() {
   const [register, { loading, error }] = useMutation(REGISTER);
 
   /* -------------------------------------------------------------------------- */
+  /*                                    Form                                    */
+  /* -------------------------------------------------------------------------- */
+
+  const initialForm: TRegisterForm = {
+    username: "",
+    password: "",
+  };
+
+  const formSchema: TValidationSchema<TRegisterForm> = {
+    username: [VR.required()],
+    password: [VR.required()],
+  };
+
+  const { formRef, errors, handleChange, handleSubmit } =
+    useForm<TRegisterForm>(initialForm, (values) =>
+      validateForm(formSchema, values),
+    );
+
+  /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-
+  async function onSubmit(inputValues: TRegisterForm) {
     const { data } = await register({
       variables: {
         input: {
-          username,
-          password,
+          username: inputValues.username,
+          password: inputValues.password,
         },
       },
     });
@@ -59,21 +79,33 @@ function RegisterPage() {
           </p>
         </div>
 
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <form
+          ref={formRef}
+          className="flex flex-col gap-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <Input
+            id="username"
+            name="username"
             className="h-11 rounded-xl border-border bg-background/70"
             placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={handleChange}
           />
+          {errors?.username && (
+            <p className="text-red-500 text-sm">{errors.username}</p>
+          )}
 
           <Input
+            id="password"
+            name="password"
             className="h-11 rounded-xl border-border bg-background/70"
             placeholder="Password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handleChange}
           />
+          {errors?.password && (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          )}
 
           <Button
             className="mt-2 h-11 rounded-xl"

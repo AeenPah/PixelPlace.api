@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aienpah/nanoform": "^1.1.2",
     "@apollo/client": "^4.2.7",
     "@base-ui/react": "^1.6.0",
     "@fontsource-variable/geist": "^5.2.9",
