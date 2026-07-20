@@ -46,7 +46,7 @@ function Canvas() {
         if (CombinedGraphQLErrors.is(error)) {
           const code = error.errors[0]?.extensions?.code;
 
-          if (code === "AUTH_NOT_AUTHENTICATED") {
+          if (code === "UNAUTHORIZED") {
             notify.error(error.message, {
               duration: 5000,
               actions: [
