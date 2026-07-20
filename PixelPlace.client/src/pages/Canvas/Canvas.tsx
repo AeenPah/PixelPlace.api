@@ -7,8 +7,25 @@ import ColorPicker from "./components/ColorPicker";
 import { PIXEL_UPDATED } from "../../graphql/subscription/pixelUpdated";
 import { notify } from "../../lib/Notify/notify";
 import Navbar from "./components/Navbar";
+import { useNavigate } from "react-router-dom";
+import { CombinedGraphQLErrors } from "@apollo/client";
+
+function upsertPixel(pixels: TPixel[], pixel: TPixel): TPixel[] {
+  const index = pixels.findIndex((p) => p.x === pixel.x && p.y === pixel.y);
+  if (index === -1) return [...pixels, pixel];
+
+  const next = [...pixels];
+  next[index] = pixel;
+  return next;
+}
 
 function Canvas() {
+  /* -------------------------------------------------------------------------- */
+  /*                          React Router <Dom></Dom>                          */
+  /* -------------------------------------------------------------------------- */
+
+  const navigate = useNavigate();
+
   /* -------------------------------------------------------------------------- */
   /*                                   GraphQL                                  */
   /* -------------------------------------------------------------------------- */
@@ -19,8 +36,31 @@ function Canvas() {
     error: canvasError,
   } = useQuery(GET_CANVAS);
 
-  const [placePixel, { loading: placePixelLoading, error: placePixelError }] =
-    useMutation(PLACE_PIXEL);
+  const [placePixel, { loading: placePixelLoading }] = useMutation(
+    PLACE_PIXEL,
+    {
+      onCompleted: () => {
+        notify.success("Pixel placed successfully!");
+      },
+      onError: (error) => {
+        if (CombinedGraphQLErrors.is(error)) {
+          const code = error.errors[0]?.extensions?.code;
+
+          if (code === "AUTH_NOT_AUTHENTICATED") {
+            notify.error(error.message, {
+              duration: 5000,
+              actions: [
+                { value: "Login", actionFn: () => navigate("/auth/login") },
+              ],
+            });
+            return;
+          }
+        }
+
+        notify.error(`Place Pixel Error: ${error.message}`);
+      },
+    },
+  );
 
   const { data: subData } = useSubscription(PIXEL_UPDATED);
 
@@ -32,32 +72,21 @@ function Canvas() {
   const [pixels, setPixels] = useState<TPixel[]>([]);
 
   useEffect(() => {
-    const updatePixels = () => {
-      if (canvasData?.canvas) {
-        setPixels(canvasData.canvas);
-      }
+    const setCanvasPixels = () => {
+      if (canvasData?.canvas) setPixels(canvasData.canvas);
     };
 
-    updatePixels();
+    setCanvasPixels();
   }, [canvasData]);
 
   useEffect(() => {
     if (!subData) return;
 
     const updatePixel = () =>
-      setPixels((prev) => [...prev, subData.pixelPlaced]);
+      setPixels((prev) => upsertPixel(prev, subData.pixelPlaced));
 
     updatePixel();
   }, [subData]);
-
-  useEffect(() => {
-    if (placePixelLoading) notify.info("Place Pixel Loading");
-  }, [placePixelLoading]);
-
-  useEffect(() => {
-    if (placePixelError)
-      notify.error(`Place Pixel Error: ${placePixelError.message}`);
-  }, [placePixelError]);
 
   /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
@@ -66,15 +95,9 @@ function Canvas() {
   async function handlePixelClick(x: number, y: number) {
     await placePixel({
       variables: {
-        input: {
-          color: selectedColor,
-          x,
-          y,
-        },
+        input: { color: selectedColor, x, y },
       },
     });
-
-    notify.success("pixel placed successfully!");
   }
 
   if (canvasError) return <div>Error: {canvasError.message}</div>;
@@ -90,7 +113,11 @@ function Canvas() {
           <Fragment>
             <ColorPicker color={selectedColor} setColor={setSelectedColor} />
 
-            <PixelCanvas pixels={pixels} onPixelClick={handlePixelClick} />
+            <PixelCanvas
+              pixels={pixels}
+              onPixelClick={handlePixelClick}
+              disabled={placePixelLoading}
+            />
           </Fragment>
         )}
       </main>

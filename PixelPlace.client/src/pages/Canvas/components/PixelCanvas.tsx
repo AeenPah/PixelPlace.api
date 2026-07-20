@@ -7,17 +7,26 @@ import type { TPixel } from "../../../graphql/queries/getCanvas";
 
 type TPixelCanvas = {
   pixels: TPixel[];
+  disabled: boolean;
   onPixelClick: (x: number, y: number) => void;
 };
 const SIZE = 50;
 
-function PixelCanvas({ pixels, onPixelClick }: TPixelCanvas) {
+function PixelCanvas({ pixels, disabled, onPixelClick }: TPixelCanvas) {
   const pixelMap = new Map(
     pixels.map((pixel) => [
       `${pixel.x},${pixel.y}`,
       { color: pixel.color, username: pixel.user.username },
     ]),
   );
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Functions                                 */
+  /* -------------------------------------------------------------------------- */
+
+  function handleOnClick(x: number, y: number) {
+    if (!disabled) onPixelClick(x, y);
+  }
 
   return (
     <div className="rounded-2xl border border-border bg-card/90 p-4 shadow-[0_12px_32px_rgba(31,35,40,0.08)]">
@@ -37,7 +46,8 @@ function PixelCanvas({ pixels, onPixelClick }: TPixelCanvas) {
             <Tooltip key={`${x}-${y}`}>
               <TooltipTrigger asChild>
                 <button
-                  onClick={() => onPixelClick(x, y)}
+                  onClick={() => handleOnClick(x, y)}
+                  disabled={disabled}
                   className="
                     h-3 w-3
                     border border-border/80
